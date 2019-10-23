@@ -82,26 +82,10 @@ if( version_compare( get_option( 'ninja_forms_version', '0.0.0' ), '3', '<' ) ||
 
         public function __construct()
         {
-
-            /*
-             * Optional. If your extension creates a new field interaction or display template...
-             */
-            add_filter( 'ninja_forms_register_fields', array($this, 'register_fields'));
-
             /*
              * Optional. If your extension processes or alters form submission data on a per form basis...
              */
             add_filter( 'ninja_forms_register_actions', array($this, 'register_actions'));
-        }
-
-        /**
-         * Optional. If your extension creates a new field interaction or display template...
-         */
-        public function register_fields($actions)
-        {
-            $actions[ 'tpoty-voting' ] = new NF_TPOTYVoting_Fields_TPOTYVoting(); // includes/Fields/TPOTYVoting.php
-
-            return $actions;
         }
 
         /**
