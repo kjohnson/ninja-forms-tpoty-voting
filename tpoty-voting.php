@@ -1,0 +1,57 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit;
+
+/*
+ * Plugin Name: Ninja Forms - TPOTY Voting
+ * Plugin URI: 
+ * Description: 
+ * Version: 3.0.0
+ * Author: Kyle B. Johnson
+ * Author URI: https://kylebjohnson.me
+ * Text Domain: ninja-forms-tpoty-voting
+ *
+ * Copyright 2019 Kyle B. Johnson.
+ */
+
+if(isset($_REQUEST['dynamic_form'])){
+    add_action('init', function() {
+
+        $settings = array(
+            'title' => 'Dynamic Form ' . time(),
+        );
+
+        $form = Ninja_Forms()->form()->get();
+        $form->update_settings( $settings )->save();
+
+        $time = time();
+        $settings = array(
+            'type' => 'checkbox',
+            'label' => 'Shortlist ' . $time,
+            'label_pos' => 'above',
+            'key' => 'shortlist-' . $time,
+        ); 
+
+        $field = Ninja_Forms()->form( $form->get_id() )->field()->get();
+        $field->update_settings( $settings )->save();
+
+        $time = time();
+        $settings = array(
+            'type' => 'listcheckbox',
+            'label' => 'Portfolio ' . $time,
+            'label_pos' => 'above',
+            'key' => 'portfolio-' . $time,
+            'options' => [
+                [
+                    'label' => '<img src="https://placehold.it/200x200&text=1" />',
+                    'value' => 1,
+                ],
+                [
+                    'label' => '<img src="https://placehold.it/200x200&text=2" />',
+                    'value' => 2,
+                ],
+            ]
+        ); 
+
+        $field = Ninja_Forms()->form( $form->get_id() )->field()->get();
+        $field->update_settings( $settings )->save();
+    });
+}
