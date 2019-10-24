@@ -22,6 +22,10 @@ class GenerateForm
 
         $formID = filter_var($_POST['source'], FILTER_SANITIZE_NUMBER_INT);
 
+        if(!$formID) {
+           return new Errors\MissingSourceForm();
+        }
+
         foreach(Ninja_Forms()->form($formID)->get_subs() as $sub) {
 
             $time = time();
