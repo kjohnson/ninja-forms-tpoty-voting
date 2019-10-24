@@ -1,0 +1,9 @@
+{
+    "name": "TPOTY Voting Forms",
+    "description": "TPOTY Voting Forms plugin for WordPress, using Ninja Forms.",
+    "autoload": {
+        "psr-4": {
+            "TPOTY\\Voting\\": "src/"
+        }
+    }
+}
