@@ -4,41 +4,59 @@ namespace TPOTY\Voting\Forms;
 
 class VotingFormBuilder extends Builder
 {
+    protected $sourceForm;
+    protected $sourceFields;
+    protected $sourceSubmissions;
+
     public function __construct($formID)
     {
         $this->createForm([
             'title' => 'TPOTY Voting ' . time(),
         ]);
 
-        $submissions = Ninja_Forms()->form($formID)->get_subs();
-        $submissions = array_reverse($submissions);
-        array_walk($submissions, [$this, 'createPortfolioFields']);
+        $this->sourceForm = Ninja_Forms()->form($formID)->get_form();
+        $this->sourceFields = Ninja_Forms()->form($formID)->get_fields();
+        $this->sourceSubmissions = array_reverse(Ninja_Forms()->form($formID)->get_subs());
+
+        $this->createFields();
     }
 
-    protected function createPortfolioFields($submission)
+    protected function createFields()
+    {
+        $sourceFields = array_filter($this->sourceFields, function($field) {
+            return 'firstname' === $field->get_setting('type') || 'lastname' === $field->get_setting('type');
+        });
+
+        $sourceFieldIDs = array_map(function($field) {
+            return $field->get_id();
+        }, $sourceFields);
+
+        foreach($this->sourceSubmissions as $submission) {
+            $options = array_map(function($fieldID, $submission) {
+                return [
+                    'label' => $submission->get_field_value($fieldID), //sprintf('<img src="https://placehold.it/200x200&text=%s" />', $submission->get_field_value($fieldID)),
+                    'value' => $fieldID,
+                ];
+            }, $sourceFieldIDs, array_fill(0, count($sourceFieldIDs), $submission));
+            $this->createPortfolioFields($submission->get_id(), $options);
+        }
+    }
+
+    protected function createPortfolioFields($id, array $options)
     {
         $this->createField([
             'type' => 'checkbox',
-            'label' => 'Shortlist Protfolio #' . $submission->get_id(),
-            'label_pos' => 'above',
-            'key' => 'shortlist-' . $submission->get_id(),
+            'label' => 'Shortlist Protfolio #' . $id,
+            'label_pos' => 'left',
+            'key' => 'shortlist-' . $id,
         ]);
 
         $this->createField([
             'type' => 'listcheckbox',
-            'label' => 'Portfolio #' . $submission->get_id(),
-            'label_pos' => 'above',
-            'key' => 'portfolio-' . $submission->get_id(),
-            'options' => [
-                [
-                    'label' => '<img src="https://placehold.it/200x200&text=1" />',
-                    'value' => 1,
-                ],
-                [
-                    'label' => '<img src="https://placehold.it/200x200&text=2" />',
-                    'value' => 2,
-                ],
-            ]
+            'label' => 'Portfolio #' . $id,
+            'label_pos' => 'left',
+            'key' => 'portfolio-' . $id,
+            'options' => $options
         ]);
     }
 }
