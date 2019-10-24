@@ -1,13 +1,12 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
- * Plugin Name: Ninja Forms - TPOTY Voting
+ * Plugin Name: TPOTY Voting
  * Plugin URI: 
  * Description: 
- * Version: 3.0.0
+ * Version: 1.0.0
  * Author: Kyle B. Johnson
  * Author URI: https://kylebjohnson.me
- * Text Domain: ninja-forms-tpoty-voting
  *
  * Copyright 2019 Kyle B. Johnson.
  */
