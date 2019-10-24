@@ -20,27 +20,21 @@ include_once 'vendor/autoload.php';
 
 if(isset($_REQUEST['dynamic_form'])){
     add_action('init', function() {
-
-        $settings = array(
+        $builder = new \TPOTY\Voting\Forms\Builder();
+        $builder->createForm([
             'title' => 'Dynamic Form ' . time(),
-        );
-
-        $form = Ninja_Forms()->form()->get();
-        $form->update_settings( $settings )->save();
+        ]);
 
         $time = time();
-        $settings = array(
+        $builder->createField([
             'type' => 'checkbox',
             'label' => 'Shortlist ' . $time,
             'label_pos' => 'above',
             'key' => 'shortlist-' . $time,
-        ); 
-
-        $field = Ninja_Forms()->form( $form->get_id() )->field()->get();
-        $field->update_settings( $settings )->save();
+        ]);
 
         $time = time();
-        $settings = array(
+        $builder->createField([
             'type' => 'listcheckbox',
             'label' => 'Portfolio ' . $time,
             'label_pos' => 'above',
@@ -55,9 +49,6 @@ if(isset($_REQUEST['dynamic_form'])){
                     'value' => 2,
                 ],
             ]
-        ); 
-
-        $field = Ninja_Forms()->form( $form->get_id() )->field()->get();
-        $field->update_settings( $settings )->save();
+        ]);
     });
 }
