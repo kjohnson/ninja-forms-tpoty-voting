@@ -18,3 +18,4 @@ include_once 'vendor/autoload.php';
 
 (new \TPOTY\Voting\Admin\Submenu())->hook();
 (new \TPOTY\Voting\Actions\GenerateForm())->hook();
+(new \TPOTY\Voting\Actions\GenerateShortlistVotingForm())->hook();
