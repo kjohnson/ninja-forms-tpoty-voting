@@ -14,6 +14,10 @@
 // TODO: PHP Version Check.
 // TODO: Ninja Forms Version Check.
 
+include_once 'vendor/autoload.php';
+
+(new \TPOTY\Admin\Submenu())->hook();
+
 if(isset($_REQUEST['dynamic_form'])){
     add_action('init', function() {
 
