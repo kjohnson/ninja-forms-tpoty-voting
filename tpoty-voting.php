@@ -11,6 +11,9 @@
  * Copyright 2019 Kyle B. Johnson.
  */
 
+// TODO: PHP Version Check.
+// TODO: Ninja Forms Version Check.
+
 if(isset($_REQUEST['dynamic_form'])){
     add_action('init', function() {
 
