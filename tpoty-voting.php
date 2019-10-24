@@ -16,7 +16,7 @@
 
 include_once 'vendor/autoload.php';
 
-(new \TPOTY\Admin\Submenu())->hook();
+(new \TPOTY\Voting\Admin\Submenu())->hook();
 
 if(isset($_REQUEST['dynamic_form'])){
     add_action('init', function() {
