@@ -23,6 +23,15 @@ class Submenu
 
     public function callback()
     {
+        ?>
+        <div class="wrap">
+            <form action="<?php echo admin_url('admin-post.php'); ?>" method="POST">
+                <input type="hidden" name="action" value="tpoty_voting_generate_form">
+                <?php wp_nonce_field( 'tpoty_voting_generate_form' ); ?>
+                <button type="submit">Generate Voting Form</button>
+            </form>
+        </div>
+        <?php
         echo '<div class="wrap">Here</div>';
     }
 }

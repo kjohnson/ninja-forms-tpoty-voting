@@ -19,6 +19,11 @@ class Builder
         $this->form = $form;
     }
 
+    public function getFormID()
+    {
+        return $this->form->get_id();
+    }
+
     public function createField($settings)
     {
         $field = Ninja_Forms()->form( $this->form->get_id() )->field()->get();
