@@ -8,6 +8,8 @@ class VotingFormBuilder extends Builder
     protected $sourceFields;
     protected $sourceSubmissions;
 
+    protected $formContentData;
+
     public function __construct($formID)
     {
         $this->createForm([
@@ -19,6 +21,9 @@ class VotingFormBuilder extends Builder
         $this->sourceSubmissions = array_reverse(Ninja_Forms()->form($formID)->get_subs());
 
         $this->createFields();
+
+        // Multi-Part Forms
+        $this->form->update_setting('formContentData', $this->formContentData)->save();
     }
 
     protected function createFields()
@@ -61,5 +66,17 @@ class VotingFormBuilder extends Builder
             'key' => 'portfolio-' . $id,
             'options' => $options
         ]);
+
+        $this->formContentData[] = [
+            'formContentData' => [
+                'shortlist-' . $id,
+                'portfolio-' . $id,
+            ],
+            'order' => count($this->formContentData),
+            'type' => 'part',
+            'clean' => true,
+            'title' => '#' . $id,
+            'key' => 'part-' . $id,
+        ];
     }
 }
