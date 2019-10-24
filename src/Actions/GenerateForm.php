@@ -2,6 +2,8 @@
 
 namespace TPOTY\Voting\Actions;
 
+use TPOTY\Voting\Redirect;
+
 class GenerateForm
 {
     public function hook()
@@ -44,7 +46,6 @@ class GenerateForm
             ]
         ]);
 
-        wp_redirect( add_query_arg(['page' => 'ninja-forms', 'form_id' => $builder->getFormID()], admin_url()), $status = 302 );
-        exit;
+        return Redirect::ninjaForms($builder->getFormID());
     }
 }
