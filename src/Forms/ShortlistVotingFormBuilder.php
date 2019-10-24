@@ -10,14 +10,13 @@ class ShortlistVotingFormBuilder extends Builder
 
     public function __construct($formID)
     {
-        $this->createForm([
-            'title' => 'TPOTY Shortlist Voting ' . time(),
-        ]);
-
-        $this->sourceForm = Ninja_Forms()->form($formID)->get_form();
+        $this->sourceForm = Ninja_Forms()->form($formID)->get();
         $this->sourceFields = Ninja_Forms()->form($formID)->get_fields();
-
         $this->sourceSubmissions = array_reverse(Ninja_Forms()->form($formID)->get_subs());
+
+        $this->createForm([
+            'title' => '[Shortlist] ' . $this->sourceForm->get_setting('title') . ' ' . time(),
+        ]);
 
         $this->createFields();
     }
