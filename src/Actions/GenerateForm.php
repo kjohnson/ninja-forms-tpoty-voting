@@ -17,34 +17,39 @@ class GenerateForm
 
         $builder = new \TPOTY\Voting\Forms\Builder();
         $builder->createForm([
-            'title' => 'Dynamic Form Generated ' . time(),
+            'title' => 'TPOTY Voting ' . time(),
         ]);
 
-        $time = time();
-        $builder->createField([
-            'type' => 'checkbox',
-            'label' => 'Shortlist ' . $time,
-            'label_pos' => 'above',
-            'key' => 'shortlist-' . $time,
-        ]);
+        $formID = filter_var($_POST['source'], FILTER_SANITIZE_NUMBER_INT);
 
-        $time = time();
-        $builder->createField([
-            'type' => 'listcheckbox',
-            'label' => 'Portfolio ' . $time,
-            'label_pos' => 'above',
-            'key' => 'portfolio-' . $time,
-            'options' => [
-                [
-                    'label' => '<img src="https://placehold.it/200x200&text=1" />',
-                    'value' => 1,
-                ],
-                [
-                    'label' => '<img src="https://placehold.it/200x200&text=2" />',
-                    'value' => 2,
-                ],
-            ]
-        ]);
+        foreach(Ninja_Forms()->form($formID)->get_subs() as $sub) {
+
+            $time = time();
+            $builder->createField([
+                'type' => 'checkbox',
+                'label' => 'Shortlist Protfolio #' . $sub->get_id(),
+                'label_pos' => 'above',
+                'key' => 'shortlist-' . $sub->get_id(),
+            ]);
+
+            $time = time();
+            $builder->createField([
+                'type' => 'listcheckbox',
+                'label' => 'Portfolio #' . $sub->get_id(),
+                'label_pos' => 'above',
+                'key' => 'portfolio-' . $sub->get_id(),
+                'options' => [
+                    [
+                        'label' => '<img src="https://placehold.it/200x200&text=1" />',
+                        'value' => 1,
+                    ],
+                    [
+                        'label' => '<img src="https://placehold.it/200x200&text=2" />',
+                        'value' => 2,
+                    ],
+                ]
+            ]);
+        }
 
         return Redirect::ninjaForms($builder->getFormID());
     }
