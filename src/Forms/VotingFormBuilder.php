@@ -8,7 +8,7 @@ class VotingFormBuilder extends Builder
     protected $sourceFields;
     protected $sourceSubmissions;
 
-    protected $formContentData;
+    protected $formContentData = [];
 
     public function __construct($formID)
     {
