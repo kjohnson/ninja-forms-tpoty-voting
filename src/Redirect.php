@@ -10,11 +10,15 @@ class Redirect
         exit;
     }
 
-    public static function ninjaForms($formID)
+    public static function ninjaForms($formID = false)
     {
-        $url = add_query_arg([
-            'page' => 'ninja-forms', 'form_id' => $formID
-        ], admin_url());
+        $args = [
+            'page' => 'ninja-forms'
+        ];
+
+        if($formID) $args['form_id'] = $formID;
+
+        $url = add_query_arg($args, admin_url());
 
         self::redirect($url);
     }

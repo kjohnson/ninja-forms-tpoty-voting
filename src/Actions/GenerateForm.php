@@ -23,6 +23,6 @@ class GenerateForm
 
         $builder = new \TPOTY\Voting\Forms\VotingFormBuilder($formID);
 
-        return Redirect::ninjaForms($builder->getFormID());
+        return Redirect::ninjaForms();
     }
 }
