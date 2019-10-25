@@ -22,6 +22,22 @@ class VotingFormBuilder extends Builder
 
         $this->createFields();
 
+        foreach(array_chunk($this->fields, 10 * 2) as $fields) { // 10 entries per part, 2 fields per entry.
+            $order = count($this->formContentData) + 1;
+            $part = [
+                'formContentData' => [],
+                'order' => $order,
+                'type' => 'part',
+                'clean' => true,
+                'title' => '#' . $order,
+                'key' => 'part-' . $order,
+            ];
+            foreach($fields as $field) {
+                $part['formContentData'][] = $field->get_setting('key');
+            }
+            $this->formContentData[] = $part;
+        }
+
         // Add submit button.
         $this->createField([
             'key' => "submit",
@@ -41,6 +57,27 @@ class VotingFormBuilder extends Builder
             'title' => 'Submit',
             'key' => 'part-submit',
         ];
+
+        // Add Success Message
+        $this->createAction([
+            'active' => "1",
+            'label' => "This Success Message",
+            'success_msg' => "Your form has been successfully submitted.",
+            'type' => "successmessage",
+        ]);
+
+        // Add Store Submission
+        $this->createAction([
+            'active' => "1",
+            '​​​exception_fields' => [],
+            "fields-save-toggle" => "save_all",
+            'label' => "Store Submission",
+            'message' => "This action adds users to WordPress' personal data export tool, allowing admins to comply with the GDPR and other privacy regulations from the site's front end.",
+            'set_subs_to_expire' => "0",
+            'submitter_email' => "",
+            'subs_expire_time' => "90",
+            'type' => "save",
+        ]);
 
         // Multi-Part Forms
         $this->form->update_setting('formContentData', $this->formContentData)->save();
@@ -86,17 +123,5 @@ class VotingFormBuilder extends Builder
             'key' => 'portfolio-' . $id,
             'options' => $options
         ]);
-
-        $this->formContentData[] = [
-            'formContentData' => [
-                'shortlist-' . $id,
-                'portfolio-' . $id,
-            ],
-            'order' => count($this->formContentData),
-            'type' => 'part',
-            'clean' => true,
-            'title' => '#' . $id,
-            'key' => 'part-' . $id,
-        ];
     }
 }

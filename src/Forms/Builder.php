@@ -6,6 +6,7 @@ class Builder
 {
     protected $form;
     protected $fields;
+    protected $actions;
 
     public function __construct()
     {
@@ -29,5 +30,11 @@ class Builder
         $field = Ninja_Forms()->form( $this->form->get_id() )->field()->get();
         $field->update_settings( $settings )->save();
         $this->fields[] = $field;
+    }
+
+    public function createAction($settings) {
+        $action = Ninja_Forms()->form( $this->form->get_id() )->action()->get();
+        $action->update_settings( $settings )->save();
+        $this->actions[] = $action;
     }
 }
