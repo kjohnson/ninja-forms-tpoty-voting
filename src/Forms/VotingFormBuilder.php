@@ -22,6 +22,26 @@ class VotingFormBuilder extends Builder
 
         $this->createFields();
 
+        // Add submit button.
+        $this->createField([
+            'key' => "submit",
+            'label' => "Submit",
+            'order' => count($this->fields),
+            'processing_label' => "Processing",
+            'type' => "submit",
+        ]);
+
+        $this->formContentData[] = [
+            'formContentData' => [
+                'submit',
+            ],
+            'order' => count($this->formContentData),
+            'type' => 'part',
+            'clean' => true,
+            'title' => 'Submit',
+            'key' => 'part-submit',
+        ];
+
         // Multi-Part Forms
         $this->form->update_setting('formContentData', $this->formContentData)->save();
     }
