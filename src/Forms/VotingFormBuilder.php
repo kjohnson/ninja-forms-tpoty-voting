@@ -19,10 +19,14 @@ class VotingFormBuilder extends Builder
         if(!count($this->sourceSubmissions)) wp_die('No submissions found. Cannot generate voting form.');
 
         $parts = $this->sourceForm->get_setting('formContentData');
+
         foreach($parts as $part) {
+
+            $this->formContentData = [];
+
             $title = $part['title'];
             $this->createForm([
-                'title' => '[Voting] ' . $this->sourceForm->get_setting('title') . ' [' . $title . '] ' . time(),
+                'title' => '[Voting] ' . $this->sourceForm->get_setting('title') . ' [' . $title . '] - ' . time(),
             ]);
             $this->createFields($part['formContentData']);
 
@@ -85,12 +89,6 @@ class VotingFormBuilder extends Builder
 
             // Multi-Part Forms
             $this->form->update_setting('formContentData', $this->formContentData)->save();
-
-            // Cleanup
-            $this->form = null;
-            $this->fields = null;
-            $this->actions = null;
-            $this->formContentData = [];
         }
     }
 

@@ -15,7 +15,9 @@ class Builder
 
     public function createForm($settings)
     {
-        $form = Ninja_Forms()->form()->get();
+        global $wpdb;
+        // $form = Ninja_Forms()->form()->get();
+        $form = new \NF_Database_Models_Form( $wpdb, null );
         $form->update_settings( $settings )->save();
         $this->form = $form;
     }
