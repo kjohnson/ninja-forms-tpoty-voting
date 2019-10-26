@@ -94,6 +94,35 @@ class VotingFormBuilder extends Builder
 
     protected function createFields($fieldKeys)
     {
+
+		// Adjust for L&S
+		$fieldKeys = array_map(function($fieldKey) {
+			if(is_array($fieldKey) && isset($fieldKey['cells'])) {
+				$fieldKeys = [];
+				foreach($fieldKey['cells'] as $cell) {
+					if(!isset($cell['fields'])) continue;
+					foreach($cell['fields'] as $field) {
+						$fieldKeys[] = $field;
+					}
+				}
+				return $fieldKeys;
+			} else {
+				return $fieldKey;
+			}
+		}, $fieldKeys);
+		
+		
+		$flatFieldKeys = [];
+		foreach($fieldKeys as $fieldKey) {
+			if(is_array($fieldKey)) {
+				$flatFieldKeys = array_merge($flatFieldKeys, $fieldKey);
+			} else {
+				$flatFieldKeys[] = $fieldKey;
+			}
+		}
+		// Get back to normal...
+		$fieldKeys = $flatFieldKeys;
+
         $sourceFields = array_filter($this->sourceFields, function($field) use ($fieldKeys) {
             return 'file_upload' === $field->get_setting('type') && in_array($field->get_setting('key'), $fieldKeys);
         });
