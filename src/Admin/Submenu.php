@@ -36,14 +36,23 @@ class Submenu
 
                 <div style="margin-bottom:20px;">
                     <h2><label for="source">Select a Form</label></h2>
-                    <select name="source" id="source">
-                        <option value="">--</option>
-                        <?php foreach(Ninja_Forms()->form()->get_forms() as $form): ?>
-                        <option value="<?php echo $form->get_id(); ?>">
-                            <?php echo $form->get_setting('title'); ?>
-                        </option>
+
+                    <?php foreach(Ninja_Forms()->form()->get_forms() as $form): ?>
+                        <?php
+                        $formContentData = $form->get_setting('formContentData');
+                        $isMultiPart = (is_array($formContentData) && isset($formContentData[0]['formContentData']));
+                        if(!$isMultiPart) continue;
+                        ?>
+                        <h3><?php echo $form->get_setting('title'); ?></h3>
+                        <select name="form[<?php echo $form->get_id(); ?>]">
+                            <option value=""></option>
+                            <?php foreach($formContentData as $part): ?>
+                            <option value="<?php echo $part['key']; ?>">
+                                <?php echo $part['title']; ?>
+                            </option>
                         <?php endforeach; ?>
-                    </select>
+                        </select>
+                        <?php endforeach; ?>
                 </div>
 
                 <button type="submit" class="button button-primary">Generate Voting Form</button>

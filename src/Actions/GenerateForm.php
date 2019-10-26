@@ -15,13 +15,21 @@ class GenerateForm
     {
         check_admin_referer('tpoty_voting_generate_form');
 
-        $formID = filter_var($_POST['source'], FILTER_SANITIZE_NUMBER_INT);
+        $source = array_filter($_POST['form'], function($form) {
+            return $form;
+        });
+
+        $keys = array_keys($source);
+        $values = array_values($source);
+
+        $formID = reset($keys);
+        $formPartKey = reset($values);
 
         if(!$formID) {
            return new Errors\MissingSourceForm();
         }
 
-        $builder = new \TPOTY\Voting\Forms\VotingFormBuilder($formID);
+        $builder = new \TPOTY\Voting\Forms\VotingFormBuilder($formID, $formPartKey);
 
         return Redirect::ninjaForms();
     }

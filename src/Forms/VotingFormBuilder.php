@@ -10,7 +10,7 @@ class VotingFormBuilder extends Builder
 
     protected $formContentData = [];
 
-    public function __construct($formID)
+    public function __construct($formID, $formPartKey)
     {
         $this->sourceForm = Ninja_Forms()->form($formID)->get();
         $this->sourceFields = Ninja_Forms()->form($formID)->get_fields();
@@ -19,10 +19,11 @@ class VotingFormBuilder extends Builder
         if(!count($this->sourceSubmissions)) wp_die('No submissions found. Cannot generate voting form.');
 
         $parts = $this->sourceForm->get_setting('formContentData');
+        $parts = array_filter($parts, function($part) use ($formPartKey) {
+            return $part['key'] == $formPartKey;
+        });
+        $part = reset($parts);
 
-        foreach($parts as $part) {
-
-            $this->formContentData = [];
 
             $title = $part['title'];
             $this->createForm([
@@ -89,7 +90,6 @@ class VotingFormBuilder extends Builder
 
             // Multi-Part Forms
             $this->form->update_setting('formContentData', $this->formContentData)->save();
-        }
     }
 
     protected function createFields($fieldKeys)
