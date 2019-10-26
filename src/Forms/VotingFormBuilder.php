@@ -154,14 +154,14 @@ class VotingFormBuilder extends Builder
         $this->createField([
             'type' => 'checkbox',
             'label' => 'Shortlist Protfolio #' . $id,
-            'label_pos' => 'left',
+            'label_pos' => 'above',
             'key' => 'shortlist-' . $id,
         ]);
 
         $this->createField([
             'type' => 'listcheckbox',
             'label' => 'Portfolio #' . $id,
-            'label_pos' => 'left',
+            'label_pos' => 'above',
             'key' => 'portfolio-' . $id,
             'options' => $options
         ]);
