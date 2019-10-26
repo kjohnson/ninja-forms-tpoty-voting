@@ -135,12 +135,16 @@ class VotingFormBuilder extends Builder
             $options = array_map(function($fieldID, $submission) {
                 $src = $submission->get_field_value($fieldID);
                 if(is_array($src)) $src = reset($submission->get_field_value($fieldID));
-                if(!$src) $src = 'https://placehold.it/500x500&text=Not+Submitted';
+                if(!$src) return false;
                 return [
                     'label' => sprintf('<img src="%s" />', $src),
                     'value' => $fieldID,
                 ];
             }, $sourceFieldIDs, array_fill(0, count($sourceFieldIDs), $submission));
+			$options = array_filter($options, function($option) {
+				return $option;
+			});
+			if(!$options || empty($options)) continue;
             $this->createPortfolioFields($submission->get_id(), $options);
         }
     }
