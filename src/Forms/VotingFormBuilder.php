@@ -163,7 +163,8 @@ class VotingFormBuilder extends Builder
             'label' => 'Portfolio #' . $id,
             'label_pos' => 'above',
             'key' => 'portfolio-' . $id,
-            'options' => $options
+            'options' => $options,
+            'container_class' => 'tpotyVotingImageGrid',
         ]);
     }
 }
