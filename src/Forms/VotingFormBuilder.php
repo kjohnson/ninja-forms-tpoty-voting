@@ -137,7 +137,7 @@ class VotingFormBuilder extends Builder
                 if(is_array($src)) $src = reset($submission->get_field_value($fieldID));
                 if(!$src) return false;
                 return [
-                    'label' => sprintf('<img src="%s" />', $src),
+                    'label' => 'Favourite?<br />' . sprintf('<img src="%s" />', $src),
                     'value' => $fieldID,
                 ];
             }, $sourceFieldIDs, array_fill(0, count($sourceFieldIDs), $submission));
