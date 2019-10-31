@@ -10,6 +10,8 @@ class VotingFormBuilder extends Builder
 
     protected $formContentData = [];
 
+    protected $countCalculation = ''; // {field:...-8} + {field::...-16} = 2
+
     public function __construct($formID, $formPartKey)
     {
         $this->sourceForm = Ninja_Forms()->form($formID)->get();
@@ -31,20 +33,18 @@ class VotingFormBuilder extends Builder
             ]);
             $this->createFields($part['formContentData']);
 
-            foreach(array_chunk($this->fields, 10 * 2) as $fields) { // 10 entries per part, 2 fields per entry.
-                $order = count($this->formContentData) + 1;
+            $mpFormContentData = [];
+            foreach(array_chunk($this->formContentData, 10 * 2) as $formContentData) { // 10 entries per part, 2 rows per entry.
+                $order = count($mpFormContentData);
                 $part = [
-                    'formContentData' => [],
+                    'formContentData' => $formContentData,
                     'order' => $order,
                     'type' => 'part',
                     'clean' => true,
                     'title' => '#' . $order,
                     'key' => 'part-' . $order,
                 ];
-                foreach($fields as $field) {
-                    $part['formContentData'][] = $field->get_setting('key');
-                }
-                $this->formContentData[] = $part;
+                $mpFormContentData[] = $part;
             }
 
             // Add submit button.
@@ -56,11 +56,11 @@ class VotingFormBuilder extends Builder
                 'type' => "submit",
             ]);
 
-            $this->formContentData[] = [
+            $mpFormContentData[] = [
                 'formContentData' => [
                     'submit',
                 ],
-                'order' => count($this->formContentData),
+                'order' => count($mpFormContentData),
                 'type' => 'part',
                 'clean' => true,
                 'title' => 'Submit',
@@ -89,7 +89,15 @@ class VotingFormBuilder extends Builder
             ]);
 
             // Multi-Part Forms
-            $this->form->update_setting('formContentData', $this->formContentData)->save();
+            $this->form->update_setting('formContentData', $mpFormContentData)->save();
+
+            $this->form->update_setting('calculations',[
+                [
+                    'dec' => 1,
+                    'eq' => $this->countCalculation,
+                    'name' => 'count'
+                ]
+            ])->save();
     }
 
     protected function createFields($fieldKeys)
@@ -154,17 +162,42 @@ class VotingFormBuilder extends Builder
         $this->createField([
             'type' => 'checkbox',
             'label' => 'Shortlist Protfolio #' . $id,
-            'label_pos' => 'above',
+            'label_pos' => 'right',
             'key' => 'shortlist-' . $id,
+            'checked_calc_value' => 1,
+            'unchecked_calc_value' => 0,
         ]);
+        $this->countCalculation .= '{field:' . 'shortlist-' . $id . '} + ';
+        $this->formContentData[] = [
+            'cells' => [
+                [
+                    'fields' => [ 'shortlist-' . $id ],
+                    'order' => 1,
+                    'width' => 100,
+                ]
+            ],
+            'order' => count($formContentData)
+        ];
 
-        $this->createField([
-            'type' => 'listcheckbox',
-            'label' => 'Portfolio #' . $id,
-            'label_pos' => 'above',
-            'key' => 'portfolio-' . $id,
-            'options' => $options,
-            'container_class' => 'tpotyVotingImageGrid',
-        ]);
+        $columns = [];
+        foreach($options as $option) {
+            $columns[] = [
+                'fields' => [
+                    "portfolio-{$id}-image-{$option['value']}"
+                ],
+                'order' => count($columns),
+                'width' => 25
+            ];
+            $this->createField([
+                'type' => 'checkbox',
+                'label_pos' => 'below',
+                'label' => $option['label'],
+                'key' => "portfolio-{$id}-image-{$option['value']}",
+            ]);
+        }
+        $this->formContentData[] = [
+            'cells' => $columns,
+            'order' => count($formContentData)
+        ];
     }
 }
