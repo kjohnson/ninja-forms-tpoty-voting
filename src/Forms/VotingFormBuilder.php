@@ -26,12 +26,23 @@ class VotingFormBuilder extends Builder
         });
         $part = reset($parts);
 
+	$sourceSubmissionChuncks = array_chunk($this->sourceSubmissions, 10);
 
-            $title = $part['title'];
+	$formGroupID = time();
+	$title = $part['title'];
+	$partData = $part['formContentData'];
+
+	foreach($sourceSubmissionChuncks as $i => $subChunk) {
+
+	    $this->sourceSubmissions = $subChunk;
+	    $this->formContentData = [];
+	    $this->fields = [];
+
             $this->createForm([
-                'title' => '[Voting] ' . $this->sourceForm->get_setting('title') . ' [' . $title . '] - ' . time(),
+                'title' => '[Voting] ' . $this->sourceForm->get_setting('title') . ' [' . $title . '] - ' . $formGroupID . ' - ' . $i,
+                'wrapper_class' => 'tpotyVotingForm',
             ]);
-            $this->createFields($part['formContentData']);
+            $this->createFields($partData);
 
             $mpFormContentData = [];
             foreach(array_chunk($this->formContentData, 10 * 2) as $formContentData) { // 10 entries per part, 2 rows per entry.
@@ -78,7 +89,7 @@ class VotingFormBuilder extends Builder
             // Add Store Submission
             $this->createAction([
                 'active' => "1",
-                '​​​exception_fields' => [],
+                'exception_fields' => [],
                 "fields-save-toggle" => "save_all",
                 'label' => "Store Submission",
                 'message' => "This action adds users to WordPress' personal data export tool, allowing admins to comply with the GDPR and other privacy regulations from the site's front end.",
@@ -97,7 +108,8 @@ class VotingFormBuilder extends Builder
                     'eq' => $this->countCalculation,
                     'name' => 'count'
                 ]
-            ])->save();
+	    ])->save();
+	} // End subChunkLoop
     }
 
     protected function createFields($fieldKeys)
@@ -137,21 +149,21 @@ class VotingFormBuilder extends Builder
 
         $sourceFieldIDs = array_map(function($field) {
             return $field->get_id();
-        }, $sourceFields);
+	}, $sourceFields);
 
-        foreach($this->sourceSubmissions as $submission) {
+	foreach($this->sourceSubmissions as $submission) {
             $options = array_map(function($fieldID, $submission) {
-                $src = $submission->get_field_value($fieldID);
-                if(is_array($src)) $src = reset($submission->get_field_value($fieldID));
+		    $src = $submission->get_field_value($fieldID);
+                if(is_array($src)) $src = reset($src);
                 if(!$src) return false;
                 return [
                     'label' => 'Favourite?<br />' . sprintf('<img src="%s" />', $src),
                     'value' => $fieldID,
                 ];
             }, $sourceFieldIDs, array_fill(0, count($sourceFieldIDs), $submission));
-			$options = array_filter($options, function($option) {
-				return $option;
-			});
+	    $options = array_filter($options, function($option) {
+		return $option;
+	    });
 			if(!$options || empty($options)) continue;
             $this->createPortfolioFields($submission->get_id(), $options);
         }
@@ -176,7 +188,7 @@ class VotingFormBuilder extends Builder
                     'width' => 100,
                 ]
             ],
-            'order' => count($formContentData)
+            'order' => count($this->formContentData)
         ];
 
         $columns = [];
@@ -197,7 +209,7 @@ class VotingFormBuilder extends Builder
         }
         $this->formContentData[] = [
             'cells' => $columns,
-            'order' => count($formContentData)
+            'order' => count($this->formContentData)
         ];
     }
 }
